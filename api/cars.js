@@ -1,4 +1,4 @@
-const Car = require('../database/models/Car');
+const carService = require('../services/carService');
 
 // Função para transformar o JSON do bot finlandês para nosso formato
 function transformBotData(botData) {
@@ -31,24 +31,9 @@ function transformBotData(botData) {
 // Função para salvar um lote de carros (substitui todos os existentes)
 async function saveBatchCars(carsData) {
   try {
-    // Inicia uma transação para garantir que todas as operações sejam feitas ou nenhuma
-    await Car.sequelize.transaction(async (transaction) => {
-      // 1. Limpa todos os registros existentes
-      await Car.destroy({
-        truncate: true,
-        cascade: true,
-        transaction
-      });
-      console.log('Banco de dados limpo com sucesso');
-
-      // 2. Transforma todos os dados do bot
-      const transformedCars = carsData.map((car) => transformBotData(car));
-
-      // 3. Insere todos os novos registros
-      const cars = await Car.bulkCreate(transformedCars, { transaction });
-      console.log(`${cars.length} carros salvos com sucesso`);
-      return cars;
-    });
+    const transformedCars = carsData.map((car) => transformBotData(car));
+    const result = await carService.saveBatchCars(transformedCars);
+    return result;
   } catch (error) {
     console.error('Erro ao atualizar lote de carros:', error);
     throw error;
@@ -59,9 +44,8 @@ async function saveBatchCars(carsData) {
 async function saveCar(carData) {
   try {
     const transformedData = transformBotData(carData);
-    const car = await Car.create(transformedData);
-    console.log('Carro salvo com sucesso:', car.id);
-    return car;
+    const result = await carService.saveCar(transformedData);
+    return result;
   } catch (error) {
     console.error('Erro ao salvar carro:', error);
     throw error;
@@ -70,7 +54,7 @@ async function saveCar(carData) {
 
 async function getAllCars() {
   try {
-    const cars = await Car.findAll();
+    const cars = await carService.getAllCars();
     return cars;
   } catch (error) {
     console.error('Erro ao buscar carros:', error);
@@ -78,8 +62,19 @@ async function getAllCars() {
   }
 }
 
+async function getCarsByLote(loteId) {
+  try {
+    const cars = await carService.getCarsByLote(loteId);
+    return cars;
+  } catch (error) {
+    console.error('Erro ao buscar carros do lote:', error);
+    throw error;
+  }
+}
+
 module.exports = {
   saveCar,
   saveBatchCars,
-  getAllCars
+  getAllCars,
+  getCarsByLote
 };
