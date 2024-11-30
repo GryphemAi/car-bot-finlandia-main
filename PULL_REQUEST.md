@@ -1,25 +1,25 @@
 # Implementação do Banco de Dados SQLite
 
-> Última atualização: 03 de janeiro de 2024
+> Última atualização: 30 de novembro de 2024
 >
 > Status: Otimizações de performance e limpeza de código implementadas
 
 ## Histórico de Atualizações
 
-### 03 de janeiro de 2024
+### 30 de novembro de 2024
 
 - Atualização do sistema de deploy
 - Configurações de ambiente atualizadas
 - Otimização do processo de build
 
-### 29 de novembro de 2023
+### 29 de novembro de 2024
 
 - Otimizações de performance no banco de dados
 - Remoção de arquivos não utilizados
 - Limpeza e organização do código
 - Atualização das migrações Prisma
 
-### 28 de novembro de 2023
+### 28 de novembro de 2024
 
 - Implementação inicial do banco SQLite
 - Criação dos modelos e estruturas básicas
@@ -106,7 +106,7 @@ npm run dev
   "placa": "ABC1234",
   "vendedor": "João Silva",
   "preco": 120000,
-  "data": "2023-11-30",
+  "data": "2024-11-30",
   "condicao": "Seminovo",
   "contato": "(11) 99999-9999",
   "quilometragem": "50000",
