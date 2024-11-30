@@ -180,6 +180,55 @@ async function enviarCarro(dadosCarro) {
 }
 ```
 
+## Deploy no Vercel
+
+Para fazer o deploy no Vercel e manter a persistência dos dados, siga estas etapas:
+
+### 1. Configuração do Banco de Dados
+
+1. Crie uma conta no [Supabase](https://supabase.com) (gratuito)
+2. Crie um novo projeto
+3. Vá em Project Settings > Database
+4. Copie a connection string (formato: `postgresql://postgres:[YOUR-PASSWORD]@db.[YOUR-PROJECT-REF].supabase.co:5432/postgres`)
+
+### 2. Configuração do Vercel
+
+1. No dashboard do Vercel, vá em Settings > Environment Variables
+2. Adicione uma nova variável:
+   - Nome: `DATABASE_URL`
+   - Valor: Cole a connection string do Supabase
+
+### 3. Atualização do Prisma
+
+1. Atualize o arquivo `prisma/schema.prisma`:
+
+```prisma
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+```
+
+2. Execute a migração do banco:
+
+```bash
+npx prisma migrate deploy
+```
+
+### 4. Testando a API
+
+Após o deploy, você pode testar a API usando o Insomnia:
+
+1. Use a URL do seu projeto no Vercel: `https://seu-projeto.vercel.app/api/cars`
+2. Faça uma requisição POST com o mesmo JSON de exemplo
+3. Os dados serão salvos no banco PostgreSQL e estarão disponíveis tanto na API quanto no site
+
+### Observações Importantes
+
+- O banco SQLite local ainda pode ser usado para desenvolvimento
+- As variáveis de ambiente precisam ser configuradas tanto no Vercel quanto no arquivo `.env` local
+- O Prisma detectará automaticamente qual banco usar baseado na variável `DATABASE_URL`
+
 ## Próximos Passos
 
 1. Implementar validação de dados mais robusta
