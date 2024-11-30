@@ -1,42 +1,70 @@
 import { NextAuthConfig } from 'next-auth';
 import CredentialProvider from 'next-auth/providers/credentials';
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
+import { app } from './lib/firebase';
+
+const auth = getAuth(app);
 
 const authConfig = {
   providers: [
     CredentialProvider({
       credentials: {
         email: {
-          type: 'email'
+          label: 'Email',
+          type: 'email',
+          required: true
         },
         password: {
-          type: 'password'
+          label: 'Password',
+          type: 'password',
+          required: true
         }
       },
-      async authorize(credentials, req) {
-        const user = {
-          id: '1',
-          name: 'John',
-          email: credentials?.email as string
-        };
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) return null;
 
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
+        try {
+          const userCredential = await signInWithEmailAndPassword(
+            auth,
+            credentials.email,
+            credentials.password
+          );
+
+          const user = userCredential.user;
+
+          return {
+            id: user.uid,
+            email: user.email,
+            name: user.displayName
+          };
+        } catch (error) {
+          console.error('Authentication error:', error);
+          return null;
         }
       }
     })
   ],
   secret: process.env.AUTH_SECRET,
   pages: {
-    signIn: '/signin' //sigin page
+    signIn: '/signin'
   },
   session: {
     strategy: 'jwt',
     maxAge: 24 * 60 * 60
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    }
   }
 } satisfies NextAuthConfig;
 
