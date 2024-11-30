@@ -1,0 +1,13 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /cars/{carId} {
+      // Permite leitura pública dos carros
+      allow read: if true;
+      
+      // Permite escrita apenas com autenticação
+      allow write: if request.auth != null;
+    }
+  }
+}
