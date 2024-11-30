@@ -1,0 +1,28 @@
+-- CreateTable
+CREATE TABLE "Car" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "nome" TEXT NOT NULL,
+    "carID" TEXT NOT NULL,
+    "placa" TEXT NOT NULL,
+    "vendedor" TEXT NOT NULL,
+    "preco" REAL NOT NULL,
+    "data" TEXT NOT NULL,
+    "condicao" TEXT NOT NULL,
+    "contato" TEXT NOT NULL,
+    "quilometragem" TEXT NOT NULL,
+    "ano" TEXT NOT NULL,
+    "motor" TEXT NOT NULL,
+    "cambio" TEXT NOT NULL,
+    "proprietarios" TEXT NOT NULL,
+    "inspecionado" TEXT NOT NULL,
+    "sistema_de_transmissao" TEXT NOT NULL,
+    "especificacoes" TEXT,
+    "seguranca" TEXT,
+    "interior_comodidades" TEXT,
+    "eletronica" TEXT,
+    "informacoes_adicionais" TEXT,
+    "outros" TEXT,
+    "imagem" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL
+);
