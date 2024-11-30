@@ -17,6 +17,13 @@
 - Configurações de ambiente atualizadas
 - Otimização do processo de build
 
+### 30 de novembro de 2024 (Atualização 2)
+
+- Implementada nova rota `/cars/batch` para atualização em lote
+- Adicionada lógica de substituição completa do banco
+- Otimizado processo de inserção em massa
+- Melhorada integração com bot externo
+
 ### 29 de novembro de 2024
 
 - Otimizações de performance no banco de dados
@@ -81,6 +88,7 @@ Esta implementação adiciona um banco de dados SQLite ao projeto para armazenar
 
 - GET `/api/cars` - Lista todos os carros
 - POST `/api/cars` - Adiciona um novo carro
+- POST `/api/cars/batch` - Atualiza em lote os carros
 
 ### 4. Limpeza de Código
 
@@ -132,53 +140,47 @@ node app.js
 
 ### 3. Integração com Bot Externo
 
-Para integrar um bot externo com a API, siga estas instruções:
+Para integrar um bot externo com a API, use a nova rota de batch:
 
-1. O bot deve fazer uma requisição POST para `http://localhost:3000/api/cars`
+1. Endpoint: `POST http://localhost:3000/api/cars/batch`
 2. Headers necessários:
    - `Content-Type: application/json`
-3. O body deve conter todos os campos obrigatórios do modelo Car:
+3. O body deve ser um array de carros, onde cada carro contém:
 
    - nome
-   - carId
+   - ID (identificador único)
    - placa
    - vendedor
    - preco
-   - data
-   - condicao
-   - contato
-   - quilometragem
-   - ano
-   - motor
-   - cambio
-   - proprietarios
-   - inspecionado
+   - outros campos conforme necessário
 
 4. Exemplo de código para integração (Node.js):
 
 ```javascript
 const axios = require('axios');
 
-async function enviarCarro(dadosCarro) {
+async function enviarLoteDeCarros(carros) {
   try {
     const response = await axios.post(
-      'http://localhost:3000/api/cars',
-      dadosCarro,
+      'http://localhost:3000/api/cars/batch',
+      carros,
       {
         headers: {
           'Content-Type': 'application/json'
         }
       }
     );
-    console.log('Carro salvo com sucesso:', response.data);
+    console.log('Carros atualizados com sucesso:', response.data);
   } catch (error) {
     console.error(
-      'Erro ao salvar carro:',
+      'Erro ao atualizar carros:',
       error.response?.data || error.message
     );
   }
 }
 ```
+
+**Importante**: A rota `/cars/batch` substitui TODOS os carros existentes pelos novos. Use esta rota quando quiser atualizar todo o catálogo de uma vez.
 
 ## Deploy no Vercel
 

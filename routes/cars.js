@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { saveCar, getAllCars } = require('../api/cars');
+const { saveCar, getAllCars, saveBatchCars } = require('../api/cars');
 
 // Rota para receber dados do bot e salvar no banco
 router.post('/cars', async (req, res) => {
@@ -18,6 +18,29 @@ router.post('/cars', async (req, res) => {
     res
       .status(500)
       .json({ error: 'Erro ao salvar o carro', details: error.message });
+  }
+});
+
+// Rota para receber lote de carros do bot (substitui todos os existentes)
+router.post('/cars/batch', async (req, res) => {
+  try {
+    const carsData = req.body;
+    if (!Array.isArray(carsData)) {
+      return res
+        .status(400)
+        .json({ error: 'O body deve ser um array de carros' });
+    }
+    console.log(`Recebido lote com ${carsData.length} carros`);
+    const savedCars = await saveBatchCars(carsData);
+    res.status(201).json({
+      message: `${carsData.length} carros atualizados com sucesso`,
+      count: carsData.length
+    });
+  } catch (error) {
+    console.error('Erro na rota POST /cars/batch:', error);
+    res
+      .status(500)
+      .json({ error: 'Erro ao salvar lote de carros', details: error.message });
   }
 });
 
