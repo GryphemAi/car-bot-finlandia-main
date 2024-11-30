@@ -8,6 +8,11 @@
 
 ### 30 de novembro de 2024
 
+- Implementada e testada integração com API externa via Insomnia
+- Adicionados logs detalhados para debug nas rotas
+- Correção de campos obrigatórios no modelo Car
+- Documentação atualizada com instruções de teste
+- Validação e tratamento de erros aprimorados
 - Atualização do sistema de deploy
 - Configurações de ambiente atualizadas
 - Otimização do processo de build
@@ -85,48 +90,102 @@ Esta implementação adiciona um banco de dados SQLite ao projeto para armazenar
 
 ## Como Testar
 
-1. Instale as dependências:
+### 1. Configuração do Ambiente
 
 ```bash
+# Instalar dependências
 npm install
+
+# Inicializar o banco de dados
+node database/init.js
+
+# Iniciar o servidor
+node app.js
 ```
 
-2. Inicie o servidor:
+### 2. Testando a API com Insomnia
 
-```bash
-npm run dev
-```
-
-3. Para adicionar um carro (POST `/api/cars`):
+1. Criar novo request POST para `http://localhost:3000/api/cars`
+2. Configurar header `Content-Type: application/json`
+3. Adicionar o seguinte JSON no body:
 
 ```json
 {
   "nome": "Toyota Corolla",
-  "ID": "CAR123",
+  "carId": "TC2023001",
+  "preco": 85000.0,
+  "ano": "2023",
   "placa": "ABC1234",
   "vendedor": "João Silva",
-  "preco": 120000,
-  "data": "2024-11-30",
-  "condicao": "Seminovo",
+  "quilometragem": "15000",
+  "data": "2024-01-01",
+  "condicao": "novo",
   "contato": "(11) 99999-9999",
-  "quilometragem": "50000",
-  "ano": "2022",
   "motor": "2.0",
   "cambio": "Automático",
-  "proprietarios": "Único dono",
-  "inspecionado": true,
-  "sistema_de_transmissao": "CVT",
-  "especificacoes": "Flex, 4 portas",
-  "seguranca": "Airbag, ABS",
-  "interior_comodidades": "Ar condicionado, Direção elétrica",
-  "eletronica": "Central multimídia, Câmera de ré",
-  "informacoes_adicionais": "IPVA pago",
-  "outros": "Manual, chave reserva",
-  "imagem": "https://exemplo.com/imagem.jpg"
+  "proprietarios": "1",
+  "inspecionado": true
 }
 ```
 
-4. Para listar os carros, acesse GET `/api/cars`
+4. Para listar os carros cadastrados, criar request GET para `http://localhost:3000/api/cars`
+
+### 3. Integração com Bot Externo
+
+Para integrar um bot externo com a API, siga estas instruções:
+
+1. O bot deve fazer uma requisição POST para `http://localhost:3000/api/cars`
+2. Headers necessários:
+   - `Content-Type: application/json`
+3. O body deve conter todos os campos obrigatórios do modelo Car:
+
+   - nome
+   - carId
+   - placa
+   - vendedor
+   - preco
+   - data
+   - condicao
+   - contato
+   - quilometragem
+   - ano
+   - motor
+   - cambio
+   - proprietarios
+   - inspecionado
+
+4. Exemplo de código para integração (Node.js):
+
+```javascript
+const axios = require('axios');
+
+async function enviarCarro(dadosCarro) {
+  try {
+    const response = await axios.post(
+      'http://localhost:3000/api/cars',
+      dadosCarro,
+      {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+    console.log('Carro salvo com sucesso:', response.data);
+  } catch (error) {
+    console.error(
+      'Erro ao salvar carro:',
+      error.response?.data || error.message
+    );
+  }
+}
+```
+
+## Próximos Passos
+
+1. Implementar validação de dados mais robusta
+2. Adicionar endpoints para atualização e deleção de carros
+3. Implementar sistema de cache para melhorar performance
+4. Adicionar testes automatizados
 
 ## Estrutura de Arquivos
 
@@ -140,15 +199,6 @@ app/
       └── cars/
           └── route.js   # Endpoints da API
 ```
-
-## Próximos Passos
-
-1. Adicionar mais endpoints (DELETE, PUT)
-2. Implementar validações de dados
-3. Adicionar testes automatizados
-4. Implementar paginação na listagem de carros
-5. Adicionar busca por campos específicos
-6. Implementar filtros de pesquisa
 
 ## Observações
 

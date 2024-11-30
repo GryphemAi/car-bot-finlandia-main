@@ -13,7 +13,7 @@ const Car = sequelize.define(
       type: DataTypes.STRING,
       allowNull: false
     },
-    ID: {
+    carId: {
       type: DataTypes.STRING,
       allowNull: false
     },
