@@ -75,12 +75,10 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-responsive": "^10.0.0",
     "recharts": "^2.12.7",
-    "sequelize": "^6.37.5",
     "sharp": "^0.32.5",
     "socket.io-client": "^4.8.1",
     "sonner": "^1.5.0",
     "sort-by": "^1.2.0",
-    "sqlite3": "^5.1.7",
     "tailwind-merge": "^1.14.0",
     "tailwindcss": "^3.4.0",
     "tailwindcss-animate": "^1.0.7",
@@ -93,14 +91,12 @@
   },
   "devDependencies": {
     "@faker-js/faker": "^9.0.3",
-    "@prisma/client": "^6.0.0",
     "@types/sort-by": "^1.2.3",
     "@types/uuid": "^9.0.7",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
     "prettier": "3.0.3",
-    "prettier-plugin-tailwindcss": "^0.5.14",
-    "prisma": "^6.0.0"
+    "prettier-plugin-tailwindcss": "^0.5.14"
   }
 }

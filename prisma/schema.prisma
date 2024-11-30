@@ -9,29 +9,12 @@ generator client {
 }
 
 model Car {
-  id                     Int      @id @default(autoincrement())
-  nome                   String
-  carID                  String   // ID do carro (renomeado para evitar conflito)
-  placa                  String
-  vendedor               String
-  preco                  Float
-  data                   String
-  condicao               String
-  contato                String
-  quilometragem          String
-  ano                    String
-  motor                  String
-  cambio                 String
-  proprietarios          String
-  inspecionado           String
-  sistema_de_transmissao String
-  especificacoes         String?
-  seguranca              String?
-  interior_comodidades   String?
-  eletronica             String?
-  informacoes_adicionais String?
-  outros                 String?
-  imagem                 String?
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+  id          Int      @id @default(autoincrement())
+  brand       String
+  model       String
+  year        Int
+  price       Float
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }

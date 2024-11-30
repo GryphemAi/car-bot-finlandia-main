@@ -1,5 +1,5 @@
-import { DataTypes } from 'sequelize';
-import sequelize from '../config';
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config');
 
 const Car = sequelize.define(
   'Car',
@@ -62,12 +62,13 @@ const Car = sequelize.define(
       allowNull: false
     },
     inspecionado: {
-      type: DataTypes.STRING,
-      allowNull: false
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     },
     sistema_de_transmissao: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: true
     },
     especificacoes: {
       type: DataTypes.TEXT,
@@ -103,4 +104,4 @@ const Car = sequelize.define(
   }
 );
 
-export default Car;
+module.exports = Car;

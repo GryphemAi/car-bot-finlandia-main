@@ -1,10 +1,10 @@
-import { Sequelize } from 'sequelize';
+const { Sequelize } = require('sequelize');
 
 // Configuração do banco de dados SQLite
 const sequelize = new Sequelize({
   dialect: 'sqlite',
   storage: './database/cars.sqlite', // Local onde o arquivo do banco será salvo
-  logging: console.log // Ativando logs de SQL para debug
+  logging: false // Desativa logs de SQL
 });
 
-export default sequelize;
+module.exports = sequelize;
