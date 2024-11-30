@@ -1,10 +1,16 @@
 # Implementação do Banco de Dados SQLite
 
-> Última atualização: 29 de novembro de 2023
+> Última atualização: 03 de janeiro de 2024
 >
 > Status: Otimizações de performance e limpeza de código implementadas
 
 ## Histórico de Atualizações
+
+### 03 de janeiro de 2024
+
+- Atualização do sistema de deploy
+- Configurações de ambiente atualizadas
+- Otimização do processo de build
 
 ### 29 de novembro de 2023
 
