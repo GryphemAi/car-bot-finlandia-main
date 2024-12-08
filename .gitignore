@@ -25,7 +25,12 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-.env*.local
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # vercel
 .vercel
@@ -33,3 +38,34 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Arquivos desnecessários e sensíveis
+generateToken.js
+test-db.ts
+PROPOSTA_COMERCIAL.md
+PLANODEACAO.md
+PLANODETAGS.md
+config/serviceAccountKey.json
+firestore.rules
+
+# Arquivos de teste e desenvolvimento
+/app/api/test-db/
+services/whatsapp-service.ts
+
+# Firebase
+firebase-debug.log*
+firebase-debug.*.log*
+.firebase/
+
+# IDE e editores
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Logs e arquivos temporários
+*.log
+.temp
+.tmp
+.cache/
