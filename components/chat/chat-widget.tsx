@@ -186,38 +186,62 @@ export default function ChatWidget() {
       {!isOpen && (
         <Button
           onClick={() => setIsOpen(!isOpen)}
-          className="h-10 w-10 rounded-full bg-blue-600 p-2.5 text-white shadow-lg hover:bg-blue-500 focus:outline-none"
+          className="h-12 w-12 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 p-3 text-white shadow-lg hover:from-blue-500 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <MessageCircle size={24} />
         </Button>
       )}
 
       {isOpen && (
-        <div className="mt-3 flex h-[600px] overflow-hidden rounded-lg bg-white shadow-xl md:w-[600px]">
+        <div className="mt-3 flex h-[600px] overflow-hidden rounded-lg bg-white shadow-2xl ring-1 ring-black/5 md:w-[600px]">
           {/* Lista de usuários */}
           {(breakpoint.isAboveMd || (breakpoint.isBelowMd && !chatMode)) && (
-            <div className="overflow-y-auto border-r bg-gray-100 p-4 md:w-1/3">
-              <h2 className="mb-3 text-lg font-semibold text-gray-700">
+            <div className="overflow-y-auto border-r bg-gray-50/80 p-4 backdrop-blur-sm md:w-1/3">
+              <h2 className="mb-3 text-lg font-semibold text-gray-800">
                 Keskustelut
               </h2>
               <div className="space-y-3">
-                {breakpoint.isBelowMd && (
+                <div className="flex items-center justify-between gap-2">
+                  {breakpoint.isBelowMd && (
+                    <Button
+                      variant="secondary"
+                      className="gap-2 font-semibold"
+                      onClick={() => setChatMode(!chatMode)}
+                    >
+                      <ArrowDownUp className="h-4 w-4" />{' '}
+                      {chatMode ? 'Keskustelut' : 'Chat'}
+                    </Button>
+                  )}
+                  <FilterModal
+                    isOpen={filtersModalOpen}
+                    onClose={() => setFiltersModalOpen(false)}
+                  />
                   <Button
-                    variant="secondary"
-                    className="w-full gap-2 font-semibold"
-                    onClick={() => setChatMode(!chatMode)}
+                    className="gap-2 bg-gray-100 hover:bg-gray-200"
+                    size="filter"
+                    onClick={() => setFiltersModalOpen(true)}
                   >
-                    <ArrowDownUp className="h-4 w-4" />{' '}
-                    {chatMode ? 'Keskustelut' : 'Chat'}
+                    <Filter className="h-3 w-3 text-sm" />
+                    Suodattimet
                   </Button>
-                )}
+                </div>
                 {users.map((user) => (
                   <Button
-                    className="w-full bg-slate-200 duration-300 hover:bg-slate-300"
+                    className="w-full bg-white/80 text-left shadow-sm transition-all duration-200 hover:bg-blue-50 hover:shadow-md data-[state=selected]:bg-blue-100"
                     key={user.id}
                     onClick={() => setSelectedUser(user)}
+                    data-state={selectedUser?.id === user.id ? 'selected' : 'default'}
                   >
-                    <h3 className="text-xs">{user.name}</h3>
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={`https://avatar.vercel.sh/${user.name}`} />
+                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex flex-col">
+                        <h3 className="text-sm font-medium">{user.name}</h3>
+                        <p className="text-xs text-gray-500 line-clamp-1">{user.message}</p>
+                      </div>
+                    </div>
                   </Button>
                 ))}
               </div>
@@ -228,24 +252,29 @@ export default function ChatWidget() {
           {(breakpoint.isAboveMd || (breakpoint.isBelowMd && chatMode)) && (
             <div className="flex flex-col md:w-2/3">
               {selectedUser ? (
-                <>
-                  <div className="flex items-center justify-between bg-blue-600 px-4 py-3 text-white">
-                    <div>
-                      <span className="block font-semibold">
-                        Chat with {selectedUser.name}
+                <div className="flex h-full flex-col">
+                  <div className="flex items-center justify-between bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3 text-white">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-8 w-8 border-2 border-white/20">
+                        <AvatarImage src={`https://avatar.vercel.sh/${selectedUser.name}`} />
+                        <AvatarFallback>{selectedUser.name.charAt(0)}</AvatarFallback>
+                      </Avatar>
+                      <span className="block font-medium">
+                        {selectedUser.name}
                       </span>
                     </div>
                     <Button
                       onClick={() => setIsOpen(!isOpen)}
-                      className="h-8 w-8 items-center justify-center text-2xl text-white focus:outline-none"
+                      variant="ghost"
+                      className="h-8 w-8 rounded-full p-0 text-white hover:bg-white/20"
                     >
                       &times;
                     </Button>
                   </div>
 
-                  <div className="flex-1 space-y-2 overflow-y-auto p-4">
+                  <div className="flex-1 space-y-2 overflow-y-auto bg-gray-50/50 p-4">
                     <div className="text-right">
-                      <div className="relative flex items-center justify-between rounded-lg bg-blue-600 p-3 text-sm text-white">
+                      <div className="relative inline-flex items-center justify-between rounded-lg bg-blue-600 p-3 text-sm text-white shadow-md">
                         <Dialog>
                           <DialogTrigger>
                             <EllipsisVertical className="size-4" />
@@ -259,39 +288,25 @@ export default function ChatWidget() {
                                 <div className="inline-flex rounded-md bg-sky-500/20 px-2 py-1 text-sm font-bold text-sky-700">
                                   Cotação: 0,00
                                 </div>
-                                <FilterModal
-                                  isOpen={filtersModalOpen}
-                                  onClose={() => setFiltersModalOpen(false)}
-                                />
-                                <Button
-                                  className="gap-2"
-                                  size="filter"
-                                  onClick={() => setFiltersModalOpen(true)}
-                                >
-                                  <Filter className="h-3 w-3 text-sm" />
-                                  Suodattimet
-                                </Button>
                               </div>
-                              <div className="flex h-[225px] flex-col items-center justify-between divide-y overflow-y-auto rounded-lg border px-3 py-1">
+                              <div className="flex h-[225px] flex-col items-center justify-between divide-y overflow-y-auto rounded-lg border bg-white px-3 py-1 shadow-inner">
                                 {users.map((user) => (
-                                  <>
-                                    <div className="flex w-full items-center justify-between py-2">
-                                      <div className="flex w-full items-center gap-3">
-                                        <Avatar>
-                                          <AvatarImage src="https://github.com/shadcn.png" />
-                                          <AvatarFallback>CN</AvatarFallback>
-                                        </Avatar>
-                                        <h1 className="text-sm font-medium">
-                                          {user.name}
-                                        </h1>
-                                      </div>
-                                      <Checkbox />
+                                  <div key={user.id} className="flex w-full items-center justify-between py-2">
+                                    <div className="flex w-full items-center gap-3">
+                                      <Avatar>
+                                        <AvatarImage src={`https://avatar.vercel.sh/${user.name}`} />
+                                        <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                      </Avatar>
+                                      <h1 className="text-sm font-medium">
+                                        {user.name}
+                                      </h1>
                                     </div>
-                                  </>
+                                    <Checkbox />
+                                  </div>
                                 ))}
                               </div>
                               <div className="flex items-center justify-center pt-2">
-                                <Button className="bg-blue-600 text-white hover:bg-blue-500">
+                                <Button className="bg-gradient-to-r from-blue-600 to-blue-700 text-white hover:from-blue-500 hover:to-blue-600">
                                   Encaminhar Mensagem
                                 </Button>
                               </div>
@@ -299,41 +314,36 @@ export default function ChatWidget() {
                           </DialogContent>
                         </Dialog>
 
-                        <div>{selectedUser.message}</div>
+                        <div className="ml-6">{selectedUser.message}</div>
                       </div>
                     </div>
                   </div>
 
-                  <div className="p-4">
+                  <div className="border-t bg-white p-4">
                     <div className="relative">
-                      <label htmlFor="Search" className="sr-only">
-                        {' '}
-                        Search{' '}
-                      </label>
-
                       <Input
                         type="text"
-                        id="Search"
-                        placeholder="Search"
-                        className="w-full rounded-md border-gray-200 py-2.5 pe-10 pl-3 shadow-sm sm:text-sm"
+                        placeholder="Digite sua mensagem..."
+                        className="w-full rounded-full border-gray-200 pr-12 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                       />
 
-                      <span className="absolute inset-y-0 end-0 grid w-9 place-content-center">
-                        <Button
-                          type="button"
-                          className="h-7 w-7 p-2 text-white hover:text-gray-200"
-                        >
-                          <Send />
-                        </Button>
-                      </span>
+                      <Button
+                        type="button"
+                        className="absolute right-1 top-1/2 h-8 w-8 -translate-y-1/2 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 p-2 text-white hover:from-blue-500 hover:to-blue-600"
+                      >
+                        <Send className="h-4 w-4" />
+                      </Button>
                     </div>
                   </div>
-                </>
+                </div>
               ) : (
-                <div className="flex flex-1 items-center justify-center">
-                  <span className="text-gray-500">
-                    Selecione um usuário para iniciar o chat
-                  </span>
+                <div className="flex flex-1 items-center justify-center bg-gray-50/50">
+                  <div className="text-center">
+                    <MessageCircle className="mx-auto h-12 w-12 text-gray-400" />
+                    <span className="mt-2 block text-gray-500">
+                      Selecione um usuário para iniciar o chat
+                    </span>
+                  </div>
                 </div>
               )}
             </div>

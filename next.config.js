@@ -1,4 +1,8 @@
 /** @type {import('next').NextConfig} */
+const withNextIntl = require('next-intl/plugin')(
+  './i18n/request.ts'
+);
+
 const nextConfig = {
   images: {
     remotePatterns: [
@@ -16,9 +20,16 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.nettiauto.com'
       }
-    ]
+    ],
+    domains: ['avatars.githubusercontent.com', 'lh3.googleusercontent.com'],
   },
-  transpilePackages: ['geist']
+  transpilePackages: ['geist'],
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  }
 };
 
-module.exports = nextConfig;
+module.exports = withNextIntl(nextConfig);

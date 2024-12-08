@@ -16,19 +16,21 @@ import { useTransition } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import * as z from 'zod';
+import { Mail, Lock, User } from 'lucide-react';
 
 const formSchema = z
   .object({
+    name: z.string().min(1, { message: 'Digite seu nome' }),
     email: z.string().email({ message: 'Digite um e-mail válido' }),
-    password: z.string({ message: 'Digite sua senha' }),
-    confirmPassword: z.string({ message: 'Confirme sua senha' })
+    password: z.string().min(6, { message: 'A senha deve ter no mínimo 6 caracteres' }),
+    confirmPassword: z.string().min(1, { message: 'Confirme sua senha' })
   })
   .refine(
     (values) => {
       return values.password === values.confirmPassword;
     },
     {
-      message: 'As senham não combinam',
+      message: 'As senhas não combinam',
       path: ['confirmPassword']
     }
   );
@@ -40,7 +42,10 @@ export default function SignUpAuthForm() {
   const callbackUrl = searchParams.get('callbackUrl');
   const [loading, startTransition] = useTransition();
   const defaultValues = {
-    email: 'demo@gmail.com'
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
   };
   const form = useForm<UserFormValue>({
     resolver: zodResolver(formSchema),
@@ -58,74 +63,110 @@ export default function SignUpAuthForm() {
   };
 
   return (
-    <>
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-2"
-        >
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
+    <Form {...form}>
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-4"
+      >
+        <FormField
+          control={form.control}
+          name="name"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium">Nome</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <User className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    placeholder="Digite seu nome..."
+                    className="pl-10 h-11"
+                    disabled={loading}
+                    {...field}
+                  />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium">Email</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                   <Input
                     type="email"
                     placeholder="Digite seu email..."
+                    className="pl-10 h-11"
                     disabled={loading}
                     {...field}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Senha</FormLabel>
-                <FormControl>
+        <FormField
+          control={form.control}
+          name="password"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium">Senha</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                   <Input
                     type="password"
                     placeholder="Digite sua senha..."
+                    className="pl-10 h-11"
                     disabled={loading}
                     {...field}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <FormField
-            control={form.control}
-            name="confirmPassword"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Confirmar Senha</FormLabel>
-                <FormControl>
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-sm font-medium">Confirmar Senha</FormLabel>
+              <FormControl>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
                   <Input
                     type="password"
                     placeholder="Confirme sua senha..."
+                    className="pl-10 h-11"
                     disabled={loading}
                     {...field}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                </div>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
-          <Button disabled={loading} className="ml-auto w-full" type="submit">
-            Continuar
-          </Button>
-        </form>
-      </Form>
-    </>
+        <Button 
+          disabled={loading} 
+          className="w-full h-11 text-base font-medium shadow-sm hover:shadow-md transition-all" 
+          type="submit"
+        >
+          {loading ? "Criando conta..." : "Criar conta"}
+        </Button>
+      </form>
+    </Form>
   );
 }
