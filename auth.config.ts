@@ -1,43 +1,41 @@
 import { NextAuthConfig } from 'next-auth';
-import CredentialProvider from 'next-auth/providers/credentials';
 
-const authConfig = {
-  providers: [
-    CredentialProvider({
-      credentials: {
-        email: {
-          type: 'email'
-        },
-        password: {
-          type: 'password'
-        }
-      },
-      async authorize(credentials, req) {
-        const user = {
-          id: '1',
-          name: 'John',
-          email: credentials?.email as string
-        };
-        if (user) {
-          // Any object returned will be saved in `user` property of the JWT
-          return user;
-        } else {
-          // If you return null then an error will be displayed advising the user to check their details.
-          return null;
-
-          // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
-        }
-      }
-    })
-  ],
-  secret: process.env.AUTH_SECRET,
-  pages: {
-    signIn: '/signin' //sigin page
+const authorizedUsers = [
+  {
+    email: "comercial@frontmidie.tech",
+    password: "devs1224",
+    role: "admin"
   },
-  session: {
-    strategy: 'jwt',
-    maxAge: 24 * 60 * 60
+  {
+    email: "cliente@cliente.com.br",
+    password: "cliente0312",
+    role: "client"
   }
+];
+
+export const authConfig = {
+  pages: {
+    signIn: '/signin',
+    error: '/signin'
+  },
+  callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isAuthPage = nextUrl.pathname.startsWith('/signin');
+      
+      if (isAuthPage) {
+        if (isLoggedIn) return Response.redirect(new URL('/', nextUrl));
+        return true;
+      }
+
+      if (!isLoggedIn) {
+        return Response.redirect(new URL('/signin', nextUrl));
+      }
+
+      return true;
+    },
+  },
+  providers: [], // Configurado em auth.ts
 } satisfies NextAuthConfig;
 
-export default authConfig;
+export { authorizedUsers };

@@ -1,19 +1,20 @@
-import AppTopbar from '@/components/layout/app-topbar';
-import type { Metadata } from 'next';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'Autoshop - Home',
-  description: 'Selling cars market - Home'
-};
+import Sidebar from "@/components/layout/sidebar";
 
 export default function HomeLayout({
-  children
+  children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <AppTopbar>{children}</AppTopbar>
-    </>
+    <div className="min-h-screen flex">
+      <Sidebar />
+      <div className="flex-1 flex flex-col">
+        <main className="flex-1 p-8 ml-64">
+          {children}
+        </main>
+      </div>
+    </div>
   );
 }

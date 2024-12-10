@@ -1,4 +1,5 @@
 import { NavItem } from '@/types';
+import { GalleryVerticalEnd } from 'lucide-react';
 
 export type CarType = {
   seller: string;
@@ -257,6 +258,12 @@ export type Product = {
   id: number;
   category: string;
   updated_at: string;
+};
+
+export const company = {
+  name: 'Finlândia Carros',
+  logo: GalleryVerticalEnd,
+  plan: 'Pro'
 };
 
 export const navItems: NavItem[] = [

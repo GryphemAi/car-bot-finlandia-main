@@ -45,9 +45,7 @@ import {
 } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import * as React from 'react';
-import { Breadcrumbs } from '../breadcrumbs';
 import { Icons } from '../icons';
 import SearchInput from '../search-input';
 import { UserNav } from './user-nav';
@@ -65,7 +63,6 @@ export default function AppSidebar({
 }) {
   const [mounted, setMounted] = React.useState(false);
   const { data: session } = useSession();
-  const pathname = usePathname();
   // Only render after first client-side mount
   React.useEffect(() => {
     setMounted(true);
@@ -106,7 +103,7 @@ export default function AppSidebar({
                       <CollapsibleTrigger asChild>
                         <SidebarMenuButton
                           tooltip={item.title}
-                          isActive={pathname === item.url}
+                          isActive={item.url === '/'}
                         >
                           {item.icon && <Icon />}
                           <span>{item.title}</span>
@@ -119,7 +116,7 @@ export default function AppSidebar({
                             <SidebarMenuSubItem key={subItem.title}>
                               <SidebarMenuSubButton
                                 asChild
-                                isActive={pathname === subItem.url}
+                                isActive={subItem.url === '/'}
                               >
                                 <Link href={subItem.url}>
                                   <span>{subItem.title}</span>
@@ -136,7 +133,7 @@ export default function AppSidebar({
                     <SidebarMenuButton
                       asChild
                       tooltip={item.title}
-                      isActive={pathname === item.url}
+                      isActive={item.url === '/'}
                     >
                       <Link href={item.url}>
                         <Icon />
@@ -241,7 +238,6 @@ export default function AppSidebar({
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="mr-2 h-4" />
-            <Breadcrumbs />
           </div>
           <div className=" hidden w-1/3 items-center gap-2 px-4 md:flex ">
             <SearchInput />
